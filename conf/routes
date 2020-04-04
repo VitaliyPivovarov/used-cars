@@ -3,7 +3,15 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+#GET        /                    controllers.Application.index
+
+#Car-mark
+GET           /car-mark            controllers.CarMarkController.getList
+GET           /car-mark/:id        controllers.CarMarkController.getById(id: Long)
+POST          /car-mark            controllers.CarMarkController.create
+PUT           /car-mark/:id        controllers.CarMarkController.update(id: Long)
+DELETE        /car-mark/:id        controllers.CarMarkController.deleteById(id: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
