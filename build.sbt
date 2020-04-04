@@ -14,6 +14,7 @@ libraryDependencies += "com.h2database" % "h2" % "1.4.200"
 libraryDependencies += "org.mybatis" % "mybatis" % "3.5.4"
 libraryDependencies += "org.mybatis" % "mybatis-guice" % "3.10"
 libraryDependencies += "org.modelmapper" % "modelmapper" % "2.3.7"
+libraryDependencies += "org.projectlombok" % "lombok" % "1.12.6"
 
 libraryDependencies ++= Seq(
   jdbc,
