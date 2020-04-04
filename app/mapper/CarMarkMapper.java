@@ -14,9 +14,6 @@ public interface CarMarkMapper {
     @Select("select * from car_mark where id = #{id}")
     CarMarkModel getById(Long id);
 
-    @Select("select * from car_mark where name like #{name}")
-    CarMarkModel getByName(String name);
-
     @Select("insert into car_mark (name, country) values(#{name}, #{country}) returning *")
     CarMarkModel save(CarMarkModel carMarkModel);
 

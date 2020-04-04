@@ -6,12 +6,19 @@
 #GET        /                    controllers.Application.index
 
 #Car-mark
-GET           /car-mark            controllers.CarMarkController.getList
-GET           /car-mark/:id        controllers.CarMarkController.getById(id: Long)
-POST          /car-mark            controllers.CarMarkController.create
-PUT           /car-mark/:id        controllers.CarMarkController.update(id: Long)
-DELETE        /car-mark/:id        controllers.CarMarkController.deleteById(id: Long)
+GET           /car-mark             controllers.CarMarkController.getList
+GET           /car-mark/:id         controllers.CarMarkController.getById(id: Long)
+POST          /car-mark             controllers.CarMarkController.create
+PUT           /car-mark/:id         controllers.CarMarkController.update(id: Long)
+DELETE        /car-mark/:id         controllers.CarMarkController.deleteById(id: Long)
+
+#Car-model
+GET           /car-model            controllers.CarModelController.getList
+GET           /car-model/:id        controllers.CarModelController.getById(id: Long)
+POST          /car-model            controllers.CarModelController.create
+PUT           /car-model/:id        controllers.CarModelController.update(id: Long)
+DELETE        /car-model/:id        controllers.CarModelController.deleteById(id: Long)
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET           /assets/*file         controllers.Assets.at(path="/public", file)
