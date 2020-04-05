@@ -14,14 +14,13 @@ libraryDependencies += "com.h2database" % "h2" % "1.4.200"
 libraryDependencies += "org.mybatis" % "mybatis" % "3.5.4"
 libraryDependencies += "org.mybatis" % "mybatis-guice" % "3.10"
 libraryDependencies += "org.modelmapper" % "modelmapper" % "2.3.7"
-libraryDependencies += "org.projectlombok" % "lombok" % "1.12.6"
+libraryDependencies += "org.projectlombok" % "lombok" % "1.18.2"
 
 libraryDependencies ++= Seq(
   jdbc,
   evolutions,
   "org.postgresql" % "postgresql" % "42.1.2"
-//"org.projectlombok" % "lombok" % "1.12.6"
 )
-unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
+//unmanagedResourceDirectories in Test +=  baseDirectory ( _ /"target/web/public/test" )
 
       

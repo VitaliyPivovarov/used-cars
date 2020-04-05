@@ -3,6 +3,7 @@ package modules;
 import com.google.inject.name.Names;
 import mapper.CarMarkMapper;
 import mapper.CarModelMapper;
+import mapper.CarStoreMapper;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import play.db.Database;
 
@@ -25,6 +26,7 @@ public class MyBatisModule extends org.mybatis.guice.MyBatisModule {
 
         addMapperClass(CarMarkMapper.class);
         addMapperClass(CarModelMapper.class);
+        addMapperClass(CarStoreMapper.class);
 
     }
 
