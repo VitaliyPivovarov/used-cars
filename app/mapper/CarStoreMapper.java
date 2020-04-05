@@ -10,7 +10,20 @@ import java.util.List;
 @Mapper
 public interface CarStoreMapper {
 
-    @Select("select * from car_store")
+    @Select({"<script>",
+
+            "select * from car_store",
+            "left join car_mark cm on car_store.car_mark_id = cm.id",
+            "left join car_model c on car_store.car_model_id = c.id",
+
+            "<where>",
+            "<if test='mileage != null'>and mileage = #{mileage}</if>",
+            "<if test='price != null'>and price = #{price}</if>",
+            "<if test='carMarkName != null'>and LOWER(cm.name) like LOWER(CONCAT('%', #{carMarkName},'%'))</if>",
+            "<if test='carModelName != null'>and LOWER(c.name) like LOWER(CONCAT('%', #{carModelName},'%'))</if>",
+            "</where>",
+
+            "</script>"})
     @Results(id = "CarStoreModelResult", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "carMarkModel", column = "car_mark_id",
@@ -20,7 +33,7 @@ public interface CarStoreMapper {
             @Result(property = "yearOfIssue", column = "year_of_issue"),
             @Result(property = "mileage", column = "mileage"),
             @Result(property = "price", column = "price")})
-    List<CarStoreModel> all();
+    List<CarStoreModel> all(@Param("mileage") Integer mileage, @Param("price") Integer price, @Param("carMarkName") String carMarkName, @Param("carModelName") String carModelName);
 
     @Select("select * from car_store where id = #{id}")
     @ResultMap("CarStoreModelResult")

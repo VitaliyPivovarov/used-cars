@@ -29,8 +29,12 @@ public class CarStoreController extends Controller {
     @Inject
     private ObjectMapper objectMapper;
 
-    public Result getList() {
-        List<CarStoreModel> list = carStoreMapper.all();
+    public Result getList(Integer mileage, Integer price, String carMarkName, String carModelName) {
+
+        List<CarStoreModel> list = carStoreMapper.all(mileage, price,
+                Objects.isNull(carMarkName) ? null : carMarkName.trim(),
+                Objects.isNull(carModelName) ? null : carModelName.trim());
+
         if (list.isEmpty()) {
             return noContent();
         }

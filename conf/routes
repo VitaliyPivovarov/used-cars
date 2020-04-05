@@ -20,11 +20,11 @@ PUT           /car-model/:id        controllers.CarModelController.update(id: Lo
 DELETE        /car-model/:id        controllers.CarModelController.deleteById(id: Long)
 
 #Car-store
-GET           /car-store           controllers.CarStoreController.getList
-GET           /car-store/:id       controllers.CarStoreController.getById(id: Long)
-POST          /car-store           controllers.CarStoreController.create
-PUT           /car-store/:id       controllers.CarStoreController.update(id: Long)
-DELETE        /car-store/:id       controllers.CarStoreController.deleteById(id: Long)
+GET           /car-store            controllers.CarStoreController.getList(mileage: Integer ?=null, price: Integer ?=null, carMarkName ?=null, carModelName ?=null)
+GET           /car-store/:id        controllers.CarStoreController.getById(id: Long)
+POST          /car-store            controllers.CarStoreController.create
+PUT           /car-store/:id        controllers.CarStoreController.update(id: Long)
+DELETE        /car-store/:id        controllers.CarStoreController.deleteById(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file         controllers.Assets.at(path="/public", file)

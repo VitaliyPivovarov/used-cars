@@ -1,8 +1,6 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import dto.CarModelCreateUpdateDto;
-import dto.CarModelDto;
 import dto.CarStoreCreateUpdateDto;
 import dto.CarStoreDto;
 import mapper.CarMarkMapper;
@@ -372,5 +370,70 @@ public class CarStoreControllerTest extends WithApplication {
 
         result = route(app, request);
         assertEquals(NO_CONTENT, result.status());
+    }
+
+    /**
+     * test: Search - OK
+     */
+    @Test
+    public void search() {
+        CarStoreMapper carStoreMapper = app.injector().instanceOf(CarStoreMapper.class);
+        CarMarkMapper carMarkMapper = app.injector().instanceOf(CarMarkMapper.class);
+        CarModelMapper carModelMapper = app.injector().instanceOf(CarModelMapper.class);
+
+        //create car-model
+        CarModelEntity carModelEntity = new CarModelEntity();
+        carModelEntity.setName("Gazel");
+        carModelEntity.setStartYear(TimeUtils.now());
+        carModelEntity.setEndYear(TimeUtils.now());
+        carModelEntity = carModelMapper.save(carModelEntity.getName(), carModelEntity.getStartYear(), carModelEntity.getEndYear());
+
+        //create car-mark
+        CarMarkModel carMarkModel = new CarMarkModel();
+        carMarkModel.setName("GAZ");
+        carMarkModel.setCountry("Russia");
+        carMarkModel = carMarkMapper.save(carMarkModel);
+
+        //create car-store
+        CarStoreModel carStoreModel = new CarStoreModel();
+        carStoreModel.setCarMarkModel(carMarkModel);
+        carStoreModel.setCarModelEntity(carModelEntity);
+        carStoreModel.setMileage(9_000);
+        carStoreModel.setPrice(new BigDecimal(1_000_000));
+        carStoreModel.setYearOfIssue(TimeUtils.now());
+        carStoreMapper.save(carStoreModel.getCarMarkModel().getId(), carStoreModel.getCarModelEntity().getId(), carStoreModel.getYearOfIssue(),
+                carStoreModel.getMileage(), carStoreModel.getPrice());
+
+        //check by price
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(GET)
+                .uri(CAR_STORE_URI.concat("?price=1000000"));
+
+        Result result = route(app, request);
+        assertEquals(OK, result.status());
+
+        //check by mileage
+        request = new Http.RequestBuilder()
+                .method(GET)
+                .uri(CAR_STORE_URI.concat("?mileage=9000"));
+
+        result = route(app, request);
+        assertEquals(OK, result.status());
+
+        //check by carMarkName
+        request = new Http.RequestBuilder()
+                .method(GET)
+                .uri(CAR_STORE_URI.concat("?carMarkName=gaz"));
+
+        result = route(app, request);
+        assertEquals(OK, result.status());
+
+        //check by carModelName
+        request = new Http.RequestBuilder()
+                .method(GET)
+                .uri(CAR_STORE_URI.concat("?carModelName=gazel"));
+
+        result = route(app, request);
+        assertEquals(OK, result.status());
     }
 }
