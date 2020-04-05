@@ -11,20 +11,7 @@ import java.util.List;
 public interface CarStoreMapper {
 
     @Select("select * from car_store")
-    @Results(value = {
-            @Result(property = "id", column = "id"),
-            @Result(property = "carMarkModel", column = "car_mark_id",
-                    many = @Many(select = "mapper.CarMarkMapper.getById")),
-            @Result(property = "carModelEntity", column = "car_model_id",
-                    many = @Many(select = "mapper.CarModelMapper.getById")),
-            @Result(property = "yearOfIssue", column = "year_of_issue"),
-            @Result(property = "mileage", column = "mileage"),
-            @Result(property = "price", column = "price"),
-    })
-    List<CarStoreModel> all();
-
-    @Select("select * from car_store where id = #{id}")
-    @Results(value = {
+    @Results(id = "CarStoreModelResult", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "carMarkModel", column = "car_mark_id",
                     many = @Many(select = "mapper.CarMarkMapper.getById")),
@@ -33,19 +20,15 @@ public interface CarStoreMapper {
             @Result(property = "yearOfIssue", column = "year_of_issue"),
             @Result(property = "mileage", column = "mileage"),
             @Result(property = "price", column = "price")})
+    List<CarStoreModel> all();
+
+    @Select("select * from car_store where id = #{id}")
+    @ResultMap("CarStoreModelResult")
     CarStoreModel getById(Long id);
 
     @Select("insert into car_store (car_mark_id, car_model_id, year_of_issue, mileage, price) " +
             "values(#{carMarkId}, #{carModelId}, #{yearOfIssue}, #{mileage}, #{price}) returning *")
-    @Results(value = {
-            @Result(property = "id", column = "id"),
-            @Result(property = "carMarkModel", column = "car_mark_id",
-                    many = @Many(select = "mapper.CarMarkMapper.getById")),
-            @Result(property = "carModelEntity", column = "car_model_id",
-                    many = @Many(select = "mapper.CarModelMapper.getById")),
-            @Result(property = "yearOfIssue", column = "year_of_issue"),
-            @Result(property = "mileage", column = "mileage"),
-            @Result(property = "price", column = "price")})
+    @ResultMap("CarStoreModelResult")
     CarStoreModel save(@Param("carMarkId") Long carMarkId,
                        @Param("carModelId") Long carModelId,
                        @Param("yearOfIssue") LocalDateTime yearOfIssue,
@@ -59,15 +42,7 @@ public interface CarStoreMapper {
             "mileage = #{mileage}, " +
             "price = #{price} " +
             "where id = #{id} returning *")
-    @Results(value = {
-            @Result(property = "id", column = "id"),
-            @Result(property = "carMarkModel", column = "car_mark_id",
-                    many = @Many(select = "mapper.CarMarkMapper.getById")),
-            @Result(property = "carModelEntity", column = "car_model_id",
-                    many = @Many(select = "mapper.CarModelMapper.getById")),
-            @Result(property = "yearOfIssue", column = "year_of_issue"),
-            @Result(property = "mileage", column = "mileage"),
-            @Result(property = "price", column = "price")})
+    @ResultMap("CarStoreModelResult")
     CarStoreModel update(@Param("id") Long id,
                          @Param("carMarkId") Long carMarkId,
                          @Param("carModelId") Long carModelId,

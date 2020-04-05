@@ -263,7 +263,7 @@ public class CarStoreControllerTest extends WithApplication {
 
         //create car-model
         CarModelEntity carModelEntity = new CarModelEntity();
-        carModelEntity.setName("2110");
+        carModelEntity.setName("Lada");
         carModelEntity.setStartYear(TimeUtils.now());
         carModelEntity.setEndYear(TimeUtils.now());
         carModelEntity = carModelMapper.save(carModelEntity.getName(), carModelEntity.getStartYear(), carModelEntity.getEndYear());
