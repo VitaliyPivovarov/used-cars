@@ -6,6 +6,7 @@ import dto.CarMarkCreateUpdateDto;
 import dto.CarMarkDto;
 import mapper.CarMarkMapper;
 import models.CarMarkModel;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import play.libs.Json;
@@ -22,18 +23,22 @@ import java.util.concurrent.ForkJoinPool;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-public class CarMarkController extends Controller {
+public class CarMarkController extends Controller implements CrudController {
 
     private final ForkJoinPool commonPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
 
-    @Inject
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+    private final CarMarkMapper carMarkMapper;
+    private final ModelMapper modelMapper;
 
     @Inject
-    private CarMarkMapper carMarkMapper;
+    public CarMarkController(ObjectMapper objectMapper, ModelMapper modelMapper, CarMarkMapper carMarkMapper) {
+        this.objectMapper = objectMapper;
+        this.modelMapper = modelMapper;
+        this.carMarkMapper = carMarkMapper;
 
-    @Inject
-    private ModelMapper modelMapper;
+        this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+    }
 
     /**
      * Get list car mark
@@ -43,7 +48,7 @@ public class CarMarkController extends Controller {
         return supplyAsync(() -> {
             List<CarMarkModel> carMarkModelList = carMarkMapper.all();
             if (carMarkModelList.isEmpty()) {
-                return noContent();
+                return notFound("Car mark list not found!");
             }
             Type toDto = new TypeToken<List<CarMarkModel>>() {}.getType();
             return ok(Json.toJson(modelMapper.map(carMarkModelList, toDto)));
@@ -56,11 +61,12 @@ public class CarMarkController extends Controller {
      * @param id car mark
      * @return Object car mark
      */
+    @Override
     public CompletionStage<Result> getById(Long id) {
         return supplyAsync(() -> {
             CarMarkModel carMarkModel = carMarkMapper.getById(id);
             if (Objects.isNull(carMarkModel)) {
-                return noContent();
+                return notFound(String.format("Car mark id = %d not found!", id));
             }
             return ok(Json.toJson(modelMapper.map(carMarkModel, CarMarkDto.class)));
         }, commonPool);
@@ -71,6 +77,7 @@ public class CarMarkController extends Controller {
      *
      * @return created car mark
      */
+    @Override
     public CompletionStage<Result> create(Http.Request request) {
         return supplyAsync(() -> {
             JsonNode json = request.body().asJson();
@@ -97,6 +104,7 @@ public class CarMarkController extends Controller {
      * @param id car mark
      * @return updated car mark
      */
+    @Override
     public CompletionStage<Result> update(Long id, Http.Request request) {
         return supplyAsync(() -> {
             JsonNode json = request.body().asJson();
@@ -109,7 +117,7 @@ public class CarMarkController extends Controller {
 
             CarMarkModel existingCarMarkModel = carMarkMapper.getById(id);
             if (Objects.isNull(existingCarMarkModel)) {
-                return noContent();
+                return notFound(String.format("Car mark id = %d not found!", id));
             }
             modelMapper.map(carMarkCreateUpdateDto, existingCarMarkModel);
             try {
@@ -126,6 +134,7 @@ public class CarMarkController extends Controller {
      * @param id car mark
      * @return code status
      */
+    @Override
     public CompletionStage<Result> deleteById(Long id) {
         return supplyAsync(() -> {
             carMarkMapper.getById(id);
@@ -133,7 +142,7 @@ public class CarMarkController extends Controller {
             // find exist object
             CarMarkModel existingCarMarkModel = carMarkMapper.getById(id);
             if (Objects.isNull(existingCarMarkModel)) {
-                return noContent();
+                return notFound(String.format("Car mark id = %d not found!", id));
             }
             carMarkMapper.deleteById(id);
             return ok();

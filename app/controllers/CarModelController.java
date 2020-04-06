@@ -7,6 +7,7 @@ import dto.CarModelCreateUpdateDto;
 import dto.CarModelDto;
 import mapper.CarModelMapper;
 import models.CarModelEntity;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import play.libs.Json;
@@ -22,24 +23,32 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-public class CarModelController extends Controller {
+public class CarModelController extends Controller implements CrudController {
 
     private final ForkJoinPool commonPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
 
-    @Inject
     private ObjectMapper objectMapper;
-
-    @Inject
     private CarModelMapper carModelMapper;
-
-    @Inject
     private ModelMapper modelMapper;
 
+    @Inject
+    public CarModelController(ObjectMapper objectMapper, ModelMapper modelMapper, CarModelMapper carModelMapper) {
+        this.objectMapper = objectMapper;
+        this.modelMapper = modelMapper;
+        this.carModelMapper = carModelMapper;
+
+        this.modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+    }
+
+    /**
+     * Get list car model
+     * @return list object car model
+     */
     public CompletionStage<Result> getList() {
         return supplyAsync(() -> {
             List<CarModelEntity> list = carModelMapper.all();
             if (list.isEmpty()) {
-                return noContent();
+                return notFound("Car model list not found!");
             }
             Type toDto = new TypeToken<List<CarModelDto>>() {
             }.getType();
@@ -48,16 +57,29 @@ public class CarModelController extends Controller {
 
     }
 
+    /**
+     * Get car model by id
+     *
+     * @param id car model
+     * @return Object car model
+     */
+    @Override
     public CompletionStage<Result> getById(Long id) {
         return supplyAsync(() -> {
             CarModelEntity entity = carModelMapper.getById(id);
             if (Objects.isNull(entity)) {
-                return noContent();
+                return notFound(String.format("Car model id = %d not found!", id));
             }
             return ok(Json.toJson(modelMapper.map(entity, CarModelDto.class)));
         }, commonPool);
     }
 
+    /**
+     * Create car model
+     *
+     * @return created car model
+     */
+    @Override
     public CompletionStage<Result> create(Http.Request request) {
         return supplyAsync(() -> {
             JsonNode json = request.body().asJson();
@@ -78,6 +100,13 @@ public class CarModelController extends Controller {
         }, commonPool);
     }
 
+    /**
+     * Update car model
+     *
+     * @param id car model
+     * @return updated car model
+     */
+    @Override
     public CompletionStage<Result> update(Long id, Http.Request request) {
         return supplyAsync(() -> {
             JsonNode json = request.body().asJson();
@@ -90,7 +119,7 @@ public class CarModelController extends Controller {
 
             CarModelEntity entity = carModelMapper.getById(id);
             if (Objects.isNull(entity)) {
-                return noContent();
+                return notFound(String.format("Car model id = %d not found!", id));
             }
             modelMapper.map(updateDto, entity);
             try {
@@ -102,11 +131,17 @@ public class CarModelController extends Controller {
         }, commonPool);
     }
 
+    /**
+     * Delete car model
+     * @param id car model
+     * @return code status
+     */
+    @Override
     public CompletionStage<Result> deleteById(Long id) {
         return supplyAsync(() -> {
             CarModelEntity entity = carModelMapper.getById(id);
             if (Objects.isNull(entity)) {
-                return noContent();
+                return notFound(String.format("Car model id = %d not found!", id));
             }
             carModelMapper.deleteById(id);
             return ok();
