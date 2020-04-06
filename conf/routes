@@ -8,22 +8,22 @@
 #Car-mark
 GET           /car-mark             controllers.CarMarkController.getList
 GET           /car-mark/:id         controllers.CarMarkController.getById(id: Long)
-POST          /car-mark             controllers.CarMarkController.create
-PUT           /car-mark/:id         controllers.CarMarkController.update(id: Long)
+POST          /car-mark             controllers.CarMarkController.create(request: Request)
+PUT           /car-mark/:id         controllers.CarMarkController.update(id: Long, request: Request)
 DELETE        /car-mark/:id         controllers.CarMarkController.deleteById(id: Long)
 
 #Car-model
 GET           /car-model            controllers.CarModelController.getList
 GET           /car-model/:id        controllers.CarModelController.getById(id: Long)
-POST          /car-model            controllers.CarModelController.create
-PUT           /car-model/:id        controllers.CarModelController.update(id: Long)
+POST          /car-model            controllers.CarModelController.create(request: Request)
+PUT           /car-model/:id        controllers.CarModelController.update(id: Long, request: Request)
 DELETE        /car-model/:id        controllers.CarModelController.deleteById(id: Long)
 
 #Car-store
 GET           /car-store            controllers.CarStoreController.getList(mileage: Integer ?=null, price: Integer ?=null, carMarkName ?=null, carModelName ?=null)
 GET           /car-store/:id        controllers.CarStoreController.getById(id: Long)
-POST          /car-store            controllers.CarStoreController.create
-PUT           /car-store/:id        controllers.CarStoreController.update(id: Long)
+POST          /car-store            controllers.CarStoreController.create(request: Request)
+PUT           /car-store/:id        controllers.CarStoreController.update(id: Long, request: Request)
 DELETE        /car-store/:id        controllers.CarStoreController.deleteById(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
